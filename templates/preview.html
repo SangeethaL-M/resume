@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ data.name }} - Professional Resume Blueprint</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @media print {
+            body { background: #ffffff !important; color: #000000 !important; }
+            .no-print { display: none !important; }
+            .print-target { box-shadow: none !important; border: none !important; padding: 0 !important; max-width: 100% !important; margin: 0 !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen py-8">
+    
+    <!-- Design Selector Control Panel -->
+    <div class="max-w-4xl mx-auto px-4 mb-6 flex items-center justify-between no-print">
+        <div class="flex gap-2">
+            <a href="{% url 'resume_builder' %}" class="bg-slate-800 border border-slate-700 text-slate-300 text-xs px-4 py-2 rounded-lg font-medium hover:bg-slate-700 transition">← Back to Workspace</a>
+            <a href="?template=modern" class="text-xs px-4 py-2 rounded-lg font-bold border {% if template == 'modern' %} bg-teal-500 text-slate-950 border-teal-400 {% else %} bg-slate-800 border-slate-700 text-slate-300 {% endif %}">Corporate Modern</a>
+            <a href="?template=minimal" class="text-xs px-4 py-2 rounded-lg font-bold border {% if template == 'minimal' %} bg-emerald-500 text-slate-950 border-emerald-400 {% else %} bg-slate-800 border-slate-700 text-slate-300 {% endif %}">Executive Minimalist</a>
+        </div>
+        <button onclick="window.print()" class="bg-emerald-400 text-slate-950 font-bold text-xs px-5 py-2.5 rounded-lg shadow-lg hover:brightness-110 transition">Download PDF File</button>
+    </div>
+
+    <!-- Printable Target Board Content Area -->
+    <main class="max-w-4xl mx-auto bg-white text-slate-900 shadow-2xl rounded-2xl print-target overflow-hidden">
+        
+        {% if template == 'modern' %}
+        <!-- THEME LAYOUT A: CORPORATE MODERN -->
+        <div class="bg-slate-900 text-white p-8 md:p-10">
+            <h1 class="text-3xl font-black tracking-tight">{{ data.name|default:"Sangeetha L" }}</h1>
+            <p class="text-xs text-slate-300 mt-2 flex flex-wrap gap-4 font-medium">
+                <span>✉️ Email: {{ data.email }}</span>
+                <span>📞 Contact: {{ data.phone }}</span>
+            </p>
+            <div class="mt-4 flex flex-wrap gap-2 items-center">
+                <span class="text-[10px] font-bold text-teal-400 uppercase tracking-wider">AI Suggested Targets:</span>
+                {% for role in data.suggested_roles %}
+                    <span class="bg-teal-500/20 text-teal-300 border border-teal-500/30 text-[10px] px-2.5 py-0.5 rounded font-semibold">{{ role }}</span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="p-8 md:p-10 space-y-6">
+            <section>
+                <h2 class="text-xs font-bold text-slate-900 uppercase tracking-widest border-b-2 border-slate-800 pb-1 mb-2">Executive Overview</h2>
+                <p class="text-slate-600 text-xs leading-relaxed text-justify">{{ data.ai_summary }}</p>
+            </section>
+
+            <section>
+                <h2 class="text-xs font-bold text-slate-900 uppercase tracking-widest border-b-2 border-slate-800 pb-1 mb-2">Educational Qualifications</h2>
+                <p class="text-slate-800 font-bold text-xs">{{ data.qualification }}</p>
+            </section>
+
+            <section>
+                <h2 class="text-xs font-bold text-slate-900 uppercase tracking-widest border-b-2 border-slate-800 pb-1 mb-2">Core Expertise & Skills</h2>
+                <div class="flex flex-wrap gap-1.5">
+                    {% for skill in data.skills %}
+                        <span class="bg-slate-100 text-slate-800 text-[11px] font-medium border border-slate-200 px-2.5 py-1 rounded">{{ skill }}</span>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <section>
+                <h2 class="text-xs font-bold text-slate-900 uppercase tracking-widest border-b-2 border-slate-800 pb-1 mb-2">Professional Career Milestones</h2>
+                <div class="text-slate-600 text-xs leading-relaxed whitespace-pre-line">{{ data.experience }}</div>
+            </section>
+        </div>
+
+        {% else %}
+        <!-- THEME LAYOUT B: EXECUTIVE MINIMALIST -->
+        <div class="p-10 md:p-14 space-y-8">
+            <header class="text-center border-b pb-4">
+                <h1 class="text-3xl font-serif tracking-wide text-black uppercase font-bold">{{ data.name|default:"Sangeetha L" }}</h1>
+                <p class="text-xs text-slate-500 mt-1 font-mono">
+                    {{ data.email }} &nbsp;•&nbsp; {{ data.phone }}
+                </p>
+                <p class="text-[11px] italic text-slate-600 mt-2">
+                    Target Profiles: {% for role in data.suggested_roles %}{{ role }}{% if not forloop.last %} | {% endif %}{% endfor %}
+                </p>
+            </header>
+
+            <section>
+                <h3 class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Professional Profile</h3>
+                <p class="text-slate-800 text-xs leading-relaxed text-justify">{{ data.ai_summary }}</p>
+            </section>
+
+            <section>
+                <h3 class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Academic Profile</h3>
+                <p class="text-slate-900 font-bold text-xs">{{ data.qualification }}</p>
+            </section>
+
+            <section>
+                <h3 class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Technical Knowledge Base</h3>
+                <p class="text-slate-800 text-xs tracking-wide font-medium">
+                    {% for skill in data.skills %}{{ skill }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                </p>
+            </section>
+
+            <section>
+                <h3 class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">Chronological Background Highlights</h3>
+                <div class="text-slate-800 text-xs leading-relaxed whitespace-pre-line">{{ data.experience }}</div>
+            </section>
+        </div>
+        {% endif %}
+        
+    </main>
+</body>
+</html>
